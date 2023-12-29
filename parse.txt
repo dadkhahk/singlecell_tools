@@ -16,7 +16,7 @@ conda activate spipe
 #     |-- hg38
 #     \-- hg38_mm10
 
-
+#kimia_updated_this_line
 cd /newvolume/
 mkdir analysis expdata genomes
 
