@@ -1,0 +1,95 @@
+# Create new environment with Python 3.9
+conda create -n spipe python=3.9
+
+# Activate your new environment
+conda activate spipe
+
+#Suggested directory structure
+# |-- analysis #pipeline outputs
+# |   |-- 202106_ex1_an1
+# |   |-- 202106_ex1_an2
+# |   |-- 202106_ex1_an3
+# |   \-- 202106_ex1_comb
+# |-- expdata #experimental data (i.e. sequencing fastq files)
+# |   \-- 202106_ex1
+# \-- genomes #reference genome files
+#     |-- hg38
+#     \-- hg38_mm10
+
+
+cd /newvolume/
+mkdir analysis expdata genomes
+
+#pipeline downloaded from web site:
+# https://support.parsebiosciences.com/hc/en-us/articles/9273974678420
+
+cd /newvolume/ParseBiosciences-Pipeline.1.0.3p/ 
+
+#install software dependencies (just use one option)
+# OPTION 1; Does NOT require sudo privileges
+# Anaconda environment install script in pipeline directory
+bash ./install_dependencies_conda.sh -y
+
+# OPTION 2; Requires sudo privileges (not used)
+# System-wide install script in pipeline directory
+bash ./install_dependencies.sh -y
+
+# pip runs the script 'setup.py' in the pipeline directory
+pip install ./
+
+# Displays usage screen
+split-pipe --help
+
+# Briefly describes processing steps, option formatting
+split-pipe --explain
+
+##Generating an indexed reference genome
+cd /newvolume
+# Create genome dir (If not already created earlier) 
+mkdir /genomes
+# Go to the new genomes dir
+cd /newvolume/genomes
+
+# Download via wget
+# NOTE: Single-line-command; Each ‘wget xyz’ is a single command
+#   It may be easiest to create a simple script file with each
+#   line holding a wget command with appropriate filenames for
+#   the genomes of interest. Then run ‘bash <filename>’
+wget https://ftp.ensembl.org/pub/release-108/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz;
+wget https://ftp.ensembl.org/pub/release-108/gtf/homo_sapiens/Homo_sapiens.GRCh38.108.gtf.gz;
+wget https://ftp.ensembl.org/pub/release-108/fasta/mus_musculus/dna/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz;
+wget https://ftp.ensembl.org/pub/release-108/gtf/mus_musculus/Mus_musculus.GRCm39.108.gtf.gz;
+
+
+# NOTE: Single-line-command -OR- multi-line with backslashes
+# (as described above)
+# split-pipe \
+# --mode mkref \
+# --genome_name hg38 \
+# --fasta /newvolume/genomes/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz \
+# --genes /newvolume/genomes/Homo_sapiens.GRCh38.108.gtf.gz \
+# --output_dir /newvolume/genomes/hg38
+
+split-pipe \
+--mode mkref \
+--genome_name hg38 \
+--fasta ./genomes/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz \
+--genes ./genomes/Homo_sapiens.GRCh38.108.gtf.gz \
+--output_dir ./genomes/hg38
+
+
+############################################
+############################################
+############################################
+############################################
+# Dec2023
+# ParseBiosciences-Pipeline.1.1.2 install:
+# 1.download ParseBiosciences-Pipeline.1.1.2 and unzip
+[dadkhahe@cn2102 ParseBiosciences-Pipeline.1.1.2]$ bash ./install_dependencies_conda.sh -y
+ 
+Problem:
+Need to specify operation; --install, --remove, or --upgrade
+[dadkhahe@cn2102 ParseBiosciences-Pipeline.1.1.2]$ bash ./install_dependencies_conda.sh -y --install
+
+
+
